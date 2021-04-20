@@ -5,11 +5,13 @@
 using LinearAlgebra
 const lAlgebra = LinearAlgebra
 #****************************************************************#
-# Returns 4x4 twist matrix ‘se3mat’ (an element of Lie Algebra se3)
-# from given twist vector (= 6x1 vector) ‘xi
+# Returns normalized version of given matrix/array
 function Normalize(N)
     return N/lAlgebra.norm(N)
 end
+#****************************************************************#
+# Returns 4x4 twist matrix ‘se3mat’ (an element of Lie Algebra se3)
+# from given twist vector (= 6x1 vector) ‘xi
 function VecToSe3( xi )
     w_skew = [ 0   -xi[3]   xi[2];
               xi[3]   0    -xi[1];
