@@ -12,21 +12,9 @@ function MatrixLog3(R)
     acosinput = (lAlgebra.tr(R) - 1) / 2
     if acosinput >= 1
         return zeros(3, 3)
-    elseif acosinput <= -1
-        if !NearZero(1 + R[3, 3])
-            omg = (1 / sqrt(2 * (1 + R[3, 3]))) * [R[1, 3], R[2, 3], 1 + R[3, 3]]
-        elseif !NearZero(1 + R[2, 2])
-            omg = (1 / sqrt(2 * (1 + R[2, 2]))) * [R[1, 2], 1 + R[2, 2], R[3, 2]]
-        else
-            omg = (1 / sqrt(2 * (1 + R[1, 1]))) * [1 + R[1, 1], R[2, 1], R[3, 1]]
-        end
-        ret_ss_matrix = pi * [0      -omg[3]   omg[2];
-                             omg[3]    0       -omg[1];
-                             -omg[2]  omg[1]      0];
-        return ret_ss_matrix
     else
         theta = acos(acosinput)
-        return theta / 2 / sin(theta) * (R - R')
+        return 1 / 2 / sin(theta) * (R - R')
     end
 end
 #****************************************************************#
@@ -38,16 +26,14 @@ function MatrixLog6(T)
         return
     end
     R = T[1:3,1:3]
-    p = T[1:3,4]
-    omgmat = MatrixLog3(R)
-    if omgmat == zeros(3, 3)
+    t = T[1:3,4]
+    omg_h = MatrixLog3(R)
+    w = [omg_h[3,2];omg_h[1,3];omg_h[2,1]]
+    if omg_h == zeros(3, 3)
         return vcat(hcat(zeros(3, 3), T[1:3, 4]), [0 0 0 0])
     else
         theta = acos((lAlgebra.tr(R) - 1) / 2)
-        return vcat(hcat(omgmat,
-                         (lAlgebra.I - omgmat / 2 +
-                          (1 /theta - 1 / tan(theta / 2) / 2) *
-                          omgmat * omgmat / theta) * T[1:3, 4]),
+        return vcat(hcat(omg_h,inv((I-R)*omg_h + w*w'*theta)*t),
                           [0 0 0 0])
     end
 end

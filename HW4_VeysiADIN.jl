@@ -15,7 +15,7 @@ end
 function VecToSe3( xi )
     w_skew = [ 0   -xi[3]   xi[2];
               xi[3]   0    -xi[1];
-             -xi[2]  xi[1]  0   ]
+             -xi[2]  xi[1]    0 ]
     return vcat(hcat(w_skew,xi[4:6]), zeros(1, 4))
 end
 #****************************************************************#
